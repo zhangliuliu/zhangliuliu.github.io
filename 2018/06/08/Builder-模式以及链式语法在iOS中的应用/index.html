@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="我们平时在创建UIButton、UILabel、UITextField等一些系统控件的时候，是不是发现如果要创建一个自定义的button往往需要设置一堆的属性，可能像这样： 12345678910111213//懒加载- (UIButton *)button&amp;#123;    if (!_button) &amp;#123;        _button = [UIButton buttonWit">
+<meta name="keywords" content="pattern,iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Builder 模式以及链式语法在iOS中的应用">
+<meta property="og:url" content="http://yoursite.com/2018/06/08/Builder-模式以及链式语法在iOS中的应用/index.html">
+<meta property="og:site_name" content="zhang">
+<meta property="og:description" content="我们平时在创建UIButton、UILabel、UITextField等一些系统控件的时候，是不是发现如果要创建一个自定义的button往往需要设置一堆的属性，可能像这样： 12345678910111213//懒加载- (UIButton *)button&amp;#123;    if (!_button) &amp;#123;        _button = [UIButton buttonWit">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-06-08T13:56:03.915Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Builder 模式以及链式语法在iOS中的应用">
+<meta name="twitter:description" content="我们平时在创建UIButton、UILabel、UITextField等一些系统控件的时候，是不是发现如果要创建一个自定义的button往往需要设置一堆的属性，可能像这样： 12345678910111213//懒加载- (UIButton *)button&amp;#123;    if (!_button) &amp;#123;        _button = [UIButton buttonWit">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/08/Builder-模式以及链式语法在iOS中的应用/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Builder 模式以及链式语法在iOS中的应用 | zhang</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-120140796-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-120140796-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhang</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />Categories</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+    <div class="reading-progress-bar"></div>
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Builder-模式以及链式语法在iOS中的应用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhang">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Builder 模式以及链式语法在iOS中的应用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-06-08 20:04:45 / Modified: 21:56:03" itemprop="dateCreated datePublished" datetime="2018-06-08T20:04:45+08:00">2018-06-08</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Symbols count in article: </span>
+                
+                <span title="Symbols count in article">6.1k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">6 mins.</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>我们平时在创建UIButton、UILabel、UITextField等一些系统控件的时候，是不是发现如果要创建一个自定义的button往往需要设置一堆的属性，可能像这样：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//懒加载</span></span><br><span class="line">- (<span class="built_in">UIButton</span> *)button&#123;</span><br><span class="line">    <span class="keyword">if</span> (!_button) &#123;</span><br><span class="line">        _button = [<span class="built_in">UIButton</span> buttonWithType:<span class="built_in">UIButtonTypeCustom</span>];</span><br><span class="line">        [_button setTitle:<span class="string">@"button"</span> forState:<span class="built_in">UIControlStateNormal</span>];</span><br><span class="line">        [_button setTitleColor:[<span class="built_in">UIColor</span> blackColor] forState:<span class="built_in">UIControlStateNormal</span>];</span><br><span class="line">        [_button setBackgroundImage:[<span class="built_in">UIImage</span> imageWithColor:[<span class="built_in">UIColor</span> whiteColor]] forState:<span class="built_in">UIControlStateNormal</span>];</span><br><span class="line">        _button.titleLabel.font = [<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">18</span>];</span><br><span class="line">        _button.layer.cornerRadius = <span class="number">4</span>;</span><br><span class="line">        _button.layer.masksToBounds = <span class="literal">YES</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _button;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>这样一来如果我们的页面有好多个<code>button</code>，或者<code>label</code>，这样的代码就会占据很大的篇幅。当然你会说可以定义一个工具类或者<code>category</code>类，自定义一些工具类方法，可能像下面这样：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//头文件</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">UIButton</span> (<span class="title">SFFly</span>)</span></span><br><span class="line"></span><br><span class="line">+ (<span class="built_in">UIButton</span> *)buttonWithTitle:(<span class="built_in">NSString</span> *)title</span><br><span class="line">                   titleColor:(<span class="built_in">UIColor</span> *)titleColor</span><br><span class="line">          highlightTitleColor:(<span class="built_in">UIColor</span> *)highlightTitleColor</span><br><span class="line">              backgroundColor:(<span class="built_in">UIColor</span> *)backgroundColor</span><br><span class="line">     highlightBackgroundColor:(<span class="built_in">UIColor</span> *)highlightBackgroundColor</span><br><span class="line">                         font:(<span class="built_in">UIFont</span> *)font</span><br><span class="line">                 cornerRadius:(<span class="built_in">CGFloat</span>)cornerRadius;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//懒加载button</span></span><br><span class="line">- (<span class="built_in">UIButton</span> *)button&#123;</span><br><span class="line">    <span class="keyword">if</span> (!_button) &#123;</span><br><span class="line">        _button = [<span class="built_in">UIButton</span> buttonWithTitle:<span class="string">@"button"</span> titleColor:[<span class="built_in">UIColor</span> blackColor] highlightTitleColor:<span class="literal">nil</span> backgroundColor:[<span class="built_in">UIColor</span> whiteColor] highlightBackgroundColor:<span class="literal">nil</span> cornerRadius:<span class="number">4</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _button;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是这种方式代码的可读性不是很好，字段一多可能就稍显啰嗦，或者如果后期需要修改样式就得调用另外的方法。接下来介绍一种更加优雅的方案：采用<code>builder pattern</code> 和 链式语法来优化<code>button</code>等控件的创建，先看下最后的效果：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIButton</span> *button = <span class="built_in">UIButton</span>.builder().title(<span class="string">@"UIButton"</span>).titleColor([<span class="built_in">UIColor</span> whiteColor]).fontSize(<span class="number">18</span>).cornerRadius(<span class="number">8</span>).backgroundColor(<span class="keyword">self</span>.view.tintColor).borderWidth(<span class="number">2</span>).borderColor([<span class="built_in">UIColor</span> blackColor]).build();</span><br></pre></td></tr></table></figure>
+<p>正式开始之前，我们点先了解 <strong>Builder Pattern</strong> 和 <strong>链式语法</strong>。</p>
+<h3 id="Builder-pattern"><a href="#Builder-pattern" class="headerlink" title="Builder pattern"></a>Builder pattern</h3><p><a href="https://zh.wikipedia.org/wiki/%E7%94%9F%E6%88%90%E5%99%A8%E6%A8%A1%E5%BC%8F" target="_blank" rel="noopener">Builder pattern</a> (生成器模式)在Java中用的可能会比较多，在<code>Objective-C</code>上可能没那么普遍，具体的可以查阅<a href="https://annema.me/2014/04/04/the-builder-pattern-in-objective-c/" target="_blank" rel="noopener">这篇文章</a>。</p>
+<h3 id="链式语法"><a href="#链式语法" class="headerlink" title="链式语法"></a>链式语法</h3><p>链式语法最常见的可能就是著名的第三方自动布局框架 <a href="https://github.com/SnapKit/Masonry" target="_blank" rel="noopener">Masonry</a> 了，大家可以感受一下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIEdgeInsets</span> padding = <span class="built_in">UIEdgeInsetsMake</span>(<span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">[view1 mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.top.equalTo(superview.mas_top).with.offset(padding.top); <span class="comment">//with is an optional semantic filler</span></span><br><span class="line">    make.left.equalTo(superview.mas_left).with.offset(padding.left);</span><br><span class="line">    make.bottom.equalTo(superview.mas_bottom).with.offset(-padding.bottom);</span><br><span class="line">    make.right.equalTo(superview.mas_right).with.offset(-padding.right);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<p>想象一下如果用[ ]方式实现方法的调用会怎么样…<br>其实我们查看<code>Masonry</code>的源码发现，其本质是对<code>block</code>的运用<br>上例子：</p>
+<blockquote>
+<p><strong>SFButtonBuilder.h</strong></p>
+</blockquote>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">SFButtonBuilder</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//title,titleColor,highlightedTitleColor等方法都会返回一个block，</span></span><br><span class="line"><span class="comment">//现以 title 方法返回的 block 为例，</span></span><br><span class="line"><span class="comment">//这个 block 有一个 NSString 类型的参数，返回值类型为当前 SFButtonBuilder 类型；</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">NSString</span> *))title;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">UIColor</span> *))titleColor;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">UIColor</span> *))highlightedTitleColor;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">UIFont</span> *))font;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">CGFloat</span>))fontSize;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">CGFloat</span>))cornerRadius;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">UIColor</span> *))backgroundColor;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">UIColor</span> *))highlightedBackgroundColor;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">UIColor</span> *))borderColor;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">CGFloat</span>))borderWidth;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">UIImage</span> *))image;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">UIImage</span> *))highlightedImage;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">UIButton</span> *(^) (<span class="keyword">void</span>))build;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>SFButtonBuilder.m</strong></p>
+</blockquote>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//由于篇幅所限，删减了一些代码</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">SFButtonBuilder</span> ()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>,<span class="keyword">strong</span>) <span class="built_in">UIButton</span> *button;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">SFButtonBuilder</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)init&#123;</span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.button = [<span class="built_in">UIButton</span> buttonWithType:<span class="built_in">UIButtonTypeCustom</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">NSString</span> *))title&#123;</span><br><span class="line">    <span class="keyword">return</span> ^SFButtonBuilder *(<span class="built_in">NSString</span> *title)&#123;</span><br><span class="line">        [<span class="keyword">self</span>.button setTitle:title forState:<span class="built_in">UIControlStateNormal</span>];</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">UIColor</span> *))titleColor&#123;</span><br><span class="line">    <span class="keyword">return</span> ^SFButtonBuilder *(<span class="built_in">UIColor</span> *titleColor)&#123;</span><br><span class="line">        [<span class="keyword">self</span>.button setTitleColor:titleColor forState:<span class="built_in">UIControlStateNormal</span>];</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">UIColor</span> *))highlightedTitleColor&#123;</span><br><span class="line">    <span class="keyword">return</span> ^SFButtonBuilder *(<span class="built_in">UIColor</span> *highlightedTitleColor)&#123;</span><br><span class="line">        [<span class="keyword">self</span>.button setTitleColor:highlightedTitleColor forState:<span class="built_in">UIControlStateHighlighted</span>];</span><br><span class="line">        [<span class="keyword">self</span>.button setTitleColor:highlightedTitleColor forState:<span class="built_in">UIControlStateSelected</span>];</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">UIFont</span> *))font&#123;</span><br><span class="line">    <span class="keyword">return</span> ^SFButtonBuilder *(<span class="built_in">UIFont</span> *font)&#123;</span><br><span class="line">        <span class="keyword">self</span>.button.titleLabel.font = font;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (SFButtonBuilder *(^)(<span class="built_in">CGFloat</span>))fontSize&#123;</span><br><span class="line">    <span class="keyword">return</span> ^SFButtonBuilder *(<span class="built_in">CGFloat</span> fontSize)&#123;</span><br><span class="line">        <span class="built_in">UIFont</span> *font = [<span class="built_in">UIFont</span> systemFontOfSize:fontSize];</span><br><span class="line">        <span class="keyword">self</span>.button.titleLabel.font = font;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">UIButton</span> *(^)(<span class="keyword">void</span>))build&#123;</span><br><span class="line">    <span class="keyword">return</span> ^<span class="built_in">UIButton</span> *(<span class="keyword">void</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.button;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<p>现以 title 这个方法为例分析：</p>
+<blockquote>
+<p>测试代码</p>
+</blockquote>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SFButtonBuilder *builder = [SFButtonBuilder new];</span><br><span class="line">builder.title(<span class="string">@"text"</span>).titleColor([<span class="built_in">UIColor</span> blackColor]).build();</span><br><span class="line"></span><br><span class="line"><span class="number">1.</span> builder.title -&gt; 返回的是一个block；</span><br><span class="line"><span class="number">2.</span> builder.title(<span class="string">@"text"</span>) -&gt; 执行了步骤一拿到的 block，并返回了 <span class="keyword">self</span> (即实例 builder);</span><br><span class="line"><span class="number">3.</span> 由于 builder.title(<span class="string">@"text"</span>) 返回的还是 builder 实例，所以可以继续调用其他方法，实现点链式调用；</span><br><span class="line"><span class="number">4.</span> build() 返回的才是 我们真正所需要的 button。</span><br></pre></td></tr></table></figure>
+<p>如果对 block 的语法不是很熟悉，可以参考一下这个<a href="http://fuckingblocksyntax.com/" target="_blank" rel="noopener">How Do I Declare A Block in Objective-C?</a>，整理的很全面…</p>
+<p>可能，我们发现现在还没有和<code>UIButton</code>关联起来，我们可以用<code>UIButton</code> 的<code>category</code>来实现：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">UIButton</span> (<span class="title">SFBuilder</span>)</span></span><br><span class="line"></span><br><span class="line">+ (SFButtonBuilder * (^)(<span class="keyword">void</span>))builder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<p>这样一来我们就实现了文章开头所说的：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIButton</span> *button = <span class="built_in">UIButton</span>.builder().title(<span class="string">@"UIButton"</span>).titleColor([<span class="built_in">UIColor</span> whiteColor]).fontSize(<span class="number">18</span>).cornerRadius(<span class="number">8</span>).backgroundColor(<span class="keyword">self</span>.view.tintColor).borderWidth(<span class="number">2</span>).borderColor([<span class="built_in">UIColor</span> blackColor]).build();</span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>当然我们可以举一反三，不止<code>UIButton</code>，其他的<code>UILabel</code>，<code>UITextField</code>，<code>UIImageView</code>等等都可以采用类似的方式来处理。</p>
+<hr>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://annema.me/2014/04/04/the-builder-pattern-in-objective-c/" target="_blank" rel="noopener">The Builder pattern in Objective-C</a></li>
+<li><a href="https://mp.weixin.qq.com/s/R5G00Ra2Q87THJHS783X5w" target="_blank" rel="noopener">Objective-C小技巧( Builder / Command )</a></li>
+<li><a href="http://fuckingblocksyntax.com/" target="_blank" rel="noopener">How Do I Declare A Block in Objective-C?</a></li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pattern/" rel="tag"># pattern</a>
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/30/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.png"
+                alt="zhang" />
+            
+              <p class="site-author-name" itemprop="name">zhang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Builder-pattern"><span class="nav-number">1.</span> <span class="nav-text">Builder pattern</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链式语法"><span class="nav-number">2.</span> <span class="nav-text">链式语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhang</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="Symbols count total">7k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="Reading time total">6 mins.</span>
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/reading_progress/reading_progress.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
