@@ -108,18 +108,18 @@
 
 
 
-  <meta name="description" content="我们平时在创建UIButton、UILabel、UITextField等一些系统控件的时候，是不是发现如果要创建一个自定义的button往往需要设置一堆的属性，可能像这样： 12345678910111213//懒加载- (UIButton *)button&amp;#123;    if (!_button) &amp;#123;        _button = [UIButton buttonWit">
+  <meta name="description" content="我们平时在创建 UIButton、UILabel、UITextField等一些系统控件的时候，是不是发现如果要创建一个自定义的 button 往往需要设置一堆的属性，可能像这样： 12345678910111213//懒加载- (UIButton *)button&amp;#123;    if (!_button) &amp;#123;        _button = [UIButton button">
 <meta name="keywords" content="pattern,iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Builder 模式以及链式语法在iOS中的应用">
 <meta property="og:url" content="http://yoursite.com/2018/06/08/Builder-模式以及链式语法在iOS中的应用/index.html">
 <meta property="og:site_name" content="zhang">
-<meta property="og:description" content="我们平时在创建UIButton、UILabel、UITextField等一些系统控件的时候，是不是发现如果要创建一个自定义的button往往需要设置一堆的属性，可能像这样： 12345678910111213//懒加载- (UIButton *)button&amp;#123;    if (!_button) &amp;#123;        _button = [UIButton buttonWit">
+<meta property="og:description" content="我们平时在创建 UIButton、UILabel、UITextField等一些系统控件的时候，是不是发现如果要创建一个自定义的 button 往往需要设置一堆的属性，可能像这样： 12345678910111213//懒加载- (UIButton *)button&amp;#123;    if (!_button) &amp;#123;        _button = [UIButton button">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-06-08T13:56:03.915Z">
+<meta property="og:updated_time" content="2018-06-11T05:51:07.728Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Builder 模式以及链式语法在iOS中的应用">
-<meta name="twitter:description" content="我们平时在创建UIButton、UILabel、UITextField等一些系统控件的时候，是不是发现如果要创建一个自定义的button往往需要设置一堆的属性，可能像这样： 12345678910111213//懒加载- (UIButton *)button&amp;#123;    if (!_button) &amp;#123;        _button = [UIButton buttonWit">
+<meta name="twitter:description" content="我们平时在创建 UIButton、UILabel、UITextField等一些系统控件的时候，是不是发现如果要创建一个自定义的 button 往往需要设置一堆的属性，可能像这样： 12345678910111213//懒加载- (UIButton *)button&amp;#123;    if (!_button) &amp;#123;        _button = [UIButton button">
 
 
 
@@ -350,12 +350,24 @@
                 
               
 
-              <time title="Created: 2018-06-08 20:04:45 / Modified: 21:56:03" itemprop="dateCreated datePublished" datetime="2018-06-08T20:04:45+08:00">2018-06-08</time>
+              <time title="Created: 2018-06-08 20:04:45" itemprop="dateCreated datePublished" datetime="2018-06-08T20:04:45+08:00">2018-06-08</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-06-11 13:51:07" itemprop="dateModified" datetime="2018-06-11T13:51:07+08:00">2018-06-11</time>
               
             
           </span>
@@ -434,19 +446,19 @@
       
 
       
-        <p>我们平时在创建UIButton、UILabel、UITextField等一些系统控件的时候，是不是发现如果要创建一个自定义的button往往需要设置一堆的属性，可能像这样：</p>
+        <p>我们平时在创建 <code>UIButton</code>、<code>UILabel</code>、<code>UITextField</code>等一些系统控件的时候，是不是发现如果要创建一个自定义的 <code>button</code> 往往需要设置一堆的属性，可能像这样：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//懒加载</span></span><br><span class="line">- (<span class="built_in">UIButton</span> *)button&#123;</span><br><span class="line">    <span class="keyword">if</span> (!_button) &#123;</span><br><span class="line">        _button = [<span class="built_in">UIButton</span> buttonWithType:<span class="built_in">UIButtonTypeCustom</span>];</span><br><span class="line">        [_button setTitle:<span class="string">@"button"</span> forState:<span class="built_in">UIControlStateNormal</span>];</span><br><span class="line">        [_button setTitleColor:[<span class="built_in">UIColor</span> blackColor] forState:<span class="built_in">UIControlStateNormal</span>];</span><br><span class="line">        [_button setBackgroundImage:[<span class="built_in">UIImage</span> imageWithColor:[<span class="built_in">UIColor</span> whiteColor]] forState:<span class="built_in">UIControlStateNormal</span>];</span><br><span class="line">        _button.titleLabel.font = [<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">18</span>];</span><br><span class="line">        _button.layer.cornerRadius = <span class="number">4</span>;</span><br><span class="line">        _button.layer.masksToBounds = <span class="literal">YES</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _button;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
-<p>这样一来如果我们的页面有好多个<code>button</code>，或者<code>label</code>，这样的代码就会占据很大的篇幅。当然你会说可以定义一个工具类或者<code>category</code>类，自定义一些工具类方法，可能像下面这样：</p>
+<p>这样一来如果我们的页面有好多个 <code>button</code>，或者 <code>label</code>，这样的代码就会占据很大的篇幅。当然你会说可以定义一个工具类或者 <code>category</code> 类，自定义一些工具类方法，可能像下面这样：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//头文件</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">UIButton</span> (<span class="title">SFFly</span>)</span></span><br><span class="line"></span><br><span class="line">+ (<span class="built_in">UIButton</span> *)buttonWithTitle:(<span class="built_in">NSString</span> *)title</span><br><span class="line">                   titleColor:(<span class="built_in">UIColor</span> *)titleColor</span><br><span class="line">          highlightTitleColor:(<span class="built_in">UIColor</span> *)highlightTitleColor</span><br><span class="line">              backgroundColor:(<span class="built_in">UIColor</span> *)backgroundColor</span><br><span class="line">     highlightBackgroundColor:(<span class="built_in">UIColor</span> *)highlightBackgroundColor</span><br><span class="line">                         font:(<span class="built_in">UIFont</span> *)font</span><br><span class="line">                 cornerRadius:(<span class="built_in">CGFloat</span>)cornerRadius;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//懒加载button</span></span><br><span class="line">- (<span class="built_in">UIButton</span> *)button&#123;</span><br><span class="line">    <span class="keyword">if</span> (!_button) &#123;</span><br><span class="line">        _button = [<span class="built_in">UIButton</span> buttonWithTitle:<span class="string">@"button"</span> titleColor:[<span class="built_in">UIColor</span> blackColor] highlightTitleColor:<span class="literal">nil</span> backgroundColor:[<span class="built_in">UIColor</span> whiteColor] highlightBackgroundColor:<span class="literal">nil</span> cornerRadius:<span class="number">4</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _button;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>但是这种方式代码的可读性不是很好，字段一多可能就稍显啰嗦，或者如果后期需要修改样式就得调用另外的方法。接下来介绍一种更加优雅的方案：采用<code>builder pattern</code> 和 链式语法来优化<code>button</code>等控件的创建，先看下最后的效果：</p>
+<p>但是这种方式代码的可读性不是很好，字段一多可能就稍显啰嗦，或者如果后期需要修改样式就得调用另外的方法。接下来介绍一种更加优雅的方案：采用 <code>builder pattern</code> 和 <code>链式语法</code> 来优化 <code>UIButton</code> 等控件的创建，先看下最后的效果：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIButton</span> *button = <span class="built_in">UIButton</span>.builder().title(<span class="string">@"UIButton"</span>).titleColor([<span class="built_in">UIColor</span> whiteColor]).fontSize(<span class="number">18</span>).cornerRadius(<span class="number">8</span>).backgroundColor(<span class="keyword">self</span>.view.tintColor).borderWidth(<span class="number">2</span>).borderColor([<span class="built_in">UIColor</span> blackColor]).build();</span><br></pre></td></tr></table></figure>
 <p>正式开始之前，我们点先了解 <strong>Builder Pattern</strong> 和 <strong>链式语法</strong>。</p>
-<h3 id="Builder-pattern"><a href="#Builder-pattern" class="headerlink" title="Builder pattern"></a>Builder pattern</h3><p><a href="https://zh.wikipedia.org/wiki/%E7%94%9F%E6%88%90%E5%99%A8%E6%A8%A1%E5%BC%8F" target="_blank" rel="noopener">Builder pattern</a> (生成器模式)在Java中用的可能会比较多，在<code>Objective-C</code>上可能没那么普遍，具体的可以查阅<a href="https://annema.me/2014/04/04/the-builder-pattern-in-objective-c/" target="_blank" rel="noopener">这篇文章</a>。</p>
+<h3 id="Builder-pattern"><a href="#Builder-pattern" class="headerlink" title="Builder pattern"></a>Builder pattern</h3><p><a href="https://zh.wikipedia.org/wiki/%E7%94%9F%E6%88%90%E5%99%A8%E6%A8%A1%E5%BC%8F" target="_blank" rel="noopener">Builder pattern</a> (生成器模式)在Java中用的可能会比较多，在 <code>Objective-C</code> 上可能没那么普遍，具体的可以查阅<a href="https://annema.me/2014/04/04/the-builder-pattern-in-objective-c/" target="_blank" rel="noopener">这篇文章</a>。</p>
 <h3 id="链式语法"><a href="#链式语法" class="headerlink" title="链式语法"></a>链式语法</h3><p>链式语法最常见的可能就是著名的第三方自动布局框架 <a href="https://github.com/SnapKit/Masonry" target="_blank" rel="noopener">Masonry</a> 了，大家可以感受一下：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIEdgeInsets</span> padding = <span class="built_in">UIEdgeInsetsMake</span>(<span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">[view1 mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.top.equalTo(superview.mas_top).with.offset(padding.top); <span class="comment">//with is an optional semantic filler</span></span><br><span class="line">    make.left.equalTo(superview.mas_left).with.offset(padding.left);</span><br><span class="line">    make.bottom.equalTo(superview.mas_bottom).with.offset(-padding.bottom);</span><br><span class="line">    make.right.equalTo(superview.mas_right).with.offset(-padding.right);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<p>想象一下如果用[ ]方式实现方法的调用会怎么样…<br>其实我们查看<code>Masonry</code>的源码发现，其本质是对<code>block</code>的运用<br>上例子：</p>
+<p>想象一下如果用[ ]方式实现方法的调用会怎么样…<br>其实我们查看 <code>Masonry</code> 的源码发现，其本质是对 <code>block</code> 的运用<br>上例子：</p>
 <blockquote>
 <p><strong>SFButtonBuilder.h</strong></p>
 </blockquote>
@@ -459,13 +471,13 @@
 <blockquote>
 <p>测试代码</p>
 </blockquote>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SFButtonBuilder *builder = [SFButtonBuilder new];</span><br><span class="line">builder.title(<span class="string">@"text"</span>).titleColor([<span class="built_in">UIColor</span> blackColor]).build();</span><br><span class="line"></span><br><span class="line"><span class="number">1.</span> builder.title -&gt; 返回的是一个block；</span><br><span class="line"><span class="number">2.</span> builder.title(<span class="string">@"text"</span>) -&gt; 执行了步骤一拿到的 block，并返回了 <span class="keyword">self</span> (即实例 builder);</span><br><span class="line"><span class="number">3.</span> 由于 builder.title(<span class="string">@"text"</span>) 返回的还是 builder 实例，所以可以继续调用其他方法，实现点链式调用；</span><br><span class="line"><span class="number">4.</span> build() 返回的才是 我们真正所需要的 button。</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SFButtonBuilder *builder = [SFButtonBuilder new];</span><br><span class="line">builder.title(<span class="string">@"text"</span>).titleColor([<span class="built_in">UIColor</span> blackColor]).build();</span><br><span class="line"></span><br><span class="line"><span class="number">1.</span> builder.title -&gt; 返回的是一个 block；</span><br><span class="line"><span class="number">2.</span> builder.title(<span class="string">@"text"</span>) -&gt; 执行了步骤一拿到的 block，并返回了 <span class="keyword">self</span> (即实例 builder);</span><br><span class="line"><span class="number">3.</span> 由于 builder.title(<span class="string">@"text"</span>) 返回的还是 builder 实例，所以可以继续调用其他方法，实现点链式调用；</span><br><span class="line"><span class="number">4.</span> build() 返回的才是 我们真正所需要的 button。</span><br></pre></td></tr></table></figure>
 <p>如果对 block 的语法不是很熟悉，可以参考一下这个<a href="http://fuckingblocksyntax.com/" target="_blank" rel="noopener">How Do I Declare A Block in Objective-C?</a>，整理的很全面…</p>
-<p>可能，我们发现现在还没有和<code>UIButton</code>关联起来，我们可以用<code>UIButton</code> 的<code>category</code>来实现：</p>
+<p>可能，我们发现现在还没有和 <code>UIButton</code> 关联起来，我们可以用 <code>UIButton</code> 的 <code>category</code> 来实现：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">UIButton</span> (<span class="title">SFBuilder</span>)</span></span><br><span class="line"></span><br><span class="line">+ (SFButtonBuilder * (^)(<span class="keyword">void</span>))builder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
 <p>这样一来我们就实现了文章开头所说的：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIButton</span> *button = <span class="built_in">UIButton</span>.builder().title(<span class="string">@"UIButton"</span>).titleColor([<span class="built_in">UIColor</span> whiteColor]).fontSize(<span class="number">18</span>).cornerRadius(<span class="number">8</span>).backgroundColor(<span class="keyword">self</span>.view.tintColor).borderWidth(<span class="number">2</span>).borderColor([<span class="built_in">UIColor</span> blackColor]).build();</span><br></pre></td></tr></table></figure>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>当然我们可以举一反三，不止<code>UIButton</code>，其他的<code>UILabel</code>，<code>UITextField</code>，<code>UIImageView</code>等等都可以采用类似的方式来处理。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>当然我们可以举一反三，不止 <code>UIButton</code> ，其他的 <code>UILabel</code> ，<code>UITextField</code> ，<code>UIImageView</code> 等等都可以采用类似的方式来处理。</p>
 <hr>
 <p>参考资料：</p>
 <ol>

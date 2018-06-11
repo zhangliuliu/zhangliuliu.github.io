@@ -348,12 +348,24 @@
                 
               
 
-              <time title="Created: 2018-06-08 20:04:45 / Modified: 21:56:03" itemprop="dateCreated datePublished" datetime="2018-06-08T20:04:45+08:00">2018-06-08</time>
+              <time title="Created: 2018-06-08 20:04:45" itemprop="dateCreated datePublished" datetime="2018-06-08T20:04:45+08:00">2018-06-08</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-06-11 13:51:07" itemprop="dateModified" datetime="2018-06-11T13:51:07+08:00">2018-06-11</time>
               
             
           </span>
@@ -433,7 +445,7 @@
 
       
         
-          <p>我们平时在创建UIButton、UILabel、UITextField等一些系统控件的时候，是不是发现如果要创建一个自定义的button往往需要设置一堆的属性，可能像这样：</p>
+          <p>我们平时在创建 <code>UIButton</code>、<code>UILabel</code>、<code>UITextField</code>等一些系统控件的时候，是不是发现如果要创建一个自定义的 <code>button</code> 往往需要设置一堆的属性，可能像这样：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//懒加载</span></span><br><span class="line">- (<span class="built_in">UIButton</span> *)button&#123;</span><br><span class="line">    <span class="keyword">if</span> (!_button) &#123;</span><br><span class="line">        _button = [<span class="built_in">UIButton</span> buttonWithType:<span class="built_in">UIButtonTypeCustom</span>];</span><br><span class="line">        [_button setTitle:<span class="string">@"button"</span> forState:<span class="built_in">UIControlStateNormal</span>];</span><br><span class="line">        [_button setTitleColor:[<span class="built_in">UIColor</span> blackColor] forState:<span class="built_in">UIControlStateNormal</span>];</span><br><span class="line">        [_button setBackgroundImage:[<span class="built_in">UIImage</span> imageWithColor:[<span class="built_in">UIColor</span> whiteColor]] forState:<span class="built_in">UIControlStateNormal</span>];</span><br><span class="line">        _button.titleLabel.font = [<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">18</span>];</span><br><span class="line">        _button.layer.cornerRadius = <span class="number">4</span>;</span><br><span class="line">        _button.layer.masksToBounds = <span class="literal">YES</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _button;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
           <div class="post-button text-center">
