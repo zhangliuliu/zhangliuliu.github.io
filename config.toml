@@ -1,0 +1,71 @@
+baseURL = 'https://zhangliuliu.site/'
+languageCode = 'zh-CN'
+title = '➏➏²⁰¹⁹'
+theme = "paper"
+
+[params]
+  googleAnalytics = "G-J2T22KZ316"
+  color = 'linen'                  # linen, wheat, gray, light
+
+  # header social icons
+  # twitter = 'zhangliuliu'
+  github = 'zhangliuliu'
+  # instagram = 'zhangliuliu'
+  rss = true
+
+  avatar = 'https://img.zhangliuliu.site/ic_avatar'
+  name = 'Zhang'
+  bio = '随手记'
+
+# ------------------------------
+
+# needed to  render raw HTML (e.g. <sub>, <sup>, <kbd>, <mark>)
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[menu]
+
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 10
+  [[menu.main]]
+    identifier = "contact"
+    name = "Contact"
+    url = "/contact/"
+    weight = 10
+
+[taxonomies]
+category = "categories"
+tag = "tags"
+series = "series"
+
+[privacy]
+
+  [privacy.vimeo]
+    disabled = false
+    simple = true
+
+  [privacy.twitter]
+    disabled = false
+    enableDNT = true
+    simple = true
+
+  [privacy.instagram]
+    disabled = false
+    simple = true
+
+  [privacy.youtube]
+    disabled = false
+    privacyEnhanced = true
+
+[services]
+
+  [services.instagram]
+    disableInlineCSS = true
+
+  [services.twitter]
+    disableInlineCSS = true
