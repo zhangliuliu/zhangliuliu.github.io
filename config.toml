@@ -1,5 +1,5 @@
-# baseURL = 'https://zhangliuliu.site/'
-baseURL = 'https://zhangliuliu.github.io'
+#baseURL = 'https://zhangliuliu.site/'
+baseURL = 'https://zhangliuliu.github.io/'
 languageCode = 'zh-CN'
 title = '➏➏²⁰¹⁹'
 theme = "paper"
