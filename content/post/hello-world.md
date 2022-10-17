@@ -196,6 +196,8 @@ jobs:
    baseURL = 'https://zhangliuliu.site/'
    ```
 
+部署成功之后通过[https://zhangliuliu.site](https://zhangliuliu.site) (腾讯cos静态网页自定义域名，部署在cos上，国内访问速度快)或 [https://zhangliuliu.github.io](https://zhangliuliu.github.io) (GitHub pages域名)进行访问。
+
 ## 参考链接
 
 - [Hugo quick start](https://gohugo.io/getting-started/quick-start/)
