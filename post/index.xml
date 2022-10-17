@@ -1,1 +1,11 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ➏➏²⁰¹⁹</title><link>https://zhangliuliu.site/post/</link><description>Recent content in Posts on ➏➏²⁰¹⁹</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 03 Oct 2022 21:40:09 +0800</lastBuildDate><atom:link href="https://zhangliuliu.site/post/index.xml" rel="self" type="application/rss+xml"/><item><title>Hello World</title><link>https://zhangliuliu.site/post/hello-world/</link><pubDate>Mon, 03 Oct 2022 21:40:09 +0800</pubDate><guid>https://zhangliuliu.site/post/hello-world/</guid><description>Hello World Hello World</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ➏➏²⁰¹⁹</title><link>https://zhangliuliu.site/post/</link><description>Recent content in Posts on ➏➏²⁰¹⁹</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Mon, 03 Oct 2022 21:40:09 +0800</lastBuildDate><atom:link href="https://zhangliuliu.site/post/index.xml" rel="self" type="application/rss+xml"/><item><title>使用Hugo搭建个人博客</title><link>https://zhangliuliu.site/post/hello-world/</link><pubDate>Mon, 03 Oct 2022 21:40:09 +0800</pubDate><guid>https://zhangliuliu.site/post/hello-world/</guid><description>Hugo 当前使用环境为Mac
+安装 brew install hugo # or port install hugo 验证是否安装成功
+hugo version 新建Hugo网站 hugo new site blog-hugo 命令执行完成之后会生成一个blog-hugo的文件夹
+添加主题 可以在themes.gohugo.io查找自己喜欢的主题，我这里用的是主题Paper
+# 进入上一步创建生成的文件夹目录 cd blog-hugo git init git submodule add https://github.com/nanxiaobei/hugo-paper themes/paper 下载完成后打开根目录下的config.toml, 修改theme 为 &amp;ldquo;paper&amp;rdquo;:
+theme = &amp;#34;paper&amp;#34; 关于主题的一些自定义配置可参考该主题的主页说明。
+新建博文 如果你想新建文章hello-world，使用下面的命令：
+hugo new post/hello-world.md 此时content文件夹下面就多了一个hello-world.md文件，打开文件就可以看到时间、文件名等信息已经自动生成了
+--- author: liuliu.zhang title: &amp;#34;hello-world&amp;#34; date: 2022-10-03T21:40:09+08:00 draft: true --- 两条 &amp;mdash; 间的信息是文章的配置信息，有的信息是自动生成的 (如：title、date 等)，简单介绍以下各项配置
+以下项目是自动生成的:
+title: # 作者 title: # 文章标题 date: # 写作时间 draft: # 是否为草稿，如果为 true 需要在命令中加入 &amp;ndash;buildDrafts 参数才会生成这个文档 以下项目需要自行添加:</description></item></channel></rss>
