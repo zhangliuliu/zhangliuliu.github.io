@@ -1,6 +1,6 @@
 baseURL = 'https://zhangliuliu.site/'
 #baseURL = 'https://zhangliuliu.github.io/'
-languageCode = 'zh-CN'
+languageCode = 'zh'
 title = '➏➏²⁰¹⁹'
 theme = "paper"
 
